@@ -1,0 +1,25 @@
+name: 从贡献图生成蛇动画
+on:
+  # 每天 0 点触发
+  schedule:
+    - cron: 0 0 * * *
+  # 允许手动触发
+  workflow_dispatch: ~
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 构建
+        uses: Platane/snk/svg-only@v2
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/snake.svg
+            dist/snake-dark.svg?palette=github-dark
+      - name: 推送
+        uses: crazy-max/ghaction-github-pages@v3
+        with:
+          target_branch: gen-snake-svg
+          build_dir: dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
